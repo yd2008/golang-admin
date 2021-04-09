@@ -1,3 +1,8 @@
+.idea
+.vscode
+*/.DS_Store
+static/uploadfile
+
 # Binaries for programs and plugins
 *.exe
 *.exe~

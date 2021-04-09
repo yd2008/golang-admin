@@ -2,7 +2,7 @@
 .vscode
 */.DS_Store
 static/uploadfile
-
+test.go
 # Binaries for programs and plugins
 *.exe
 *.exe~

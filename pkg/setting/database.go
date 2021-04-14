@@ -7,7 +7,6 @@ import (
 )
 
 func NewDBEngine(setting *DatabaseSettingS) (*gorm.DB, error) {
-
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local", setting.UserName, setting.Password, setting.Host, setting.DBName, setting.Charset, setting.ParseTime)
 	db, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {

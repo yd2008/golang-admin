@@ -22,16 +22,17 @@ func init() {
 	if err != nil {
 		log.Fatalf("setup database err! err is %v", err)
 	}
+
+	err = setting.CreatTables(global.DBEngine)
+	if err != nil {
+		log.Fatalf("create tables err! err is %v", err)
+	}
 }
 
 func main() {
 
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
-	err := setting.CreatTables(global.DBEngine)
-	if err != nil {
-		log.Fatalf("create tables err! err is %v", err)
-	}
 
 	s := &http.Server{
 		Addr:           global.ServerSetting.HttpPort,

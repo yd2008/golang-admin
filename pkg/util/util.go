@@ -1,6 +1,8 @@
 package util
 
-import "unicode"
+import (
+	"unicode"
+)
 
 // 驼峰转下划线
 func CamelCaseToUnderscore(s string) string {

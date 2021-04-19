@@ -29,6 +29,10 @@ func init() {
 	}
 }
 
+// @title yd的golang学习后台
+// @version 1.0
+// @description Go Go Go！！！
+// @termsOfService https://github.com/yd2008/golang-admin
 func main() {
 
 	gin.SetMode(global.ServerSetting.RunMode)

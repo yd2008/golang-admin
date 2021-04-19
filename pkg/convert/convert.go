@@ -6,11 +6,16 @@ import (
 )
 
 func Str2uint(s string) uint {
-	int, _ := strconv.Atoi(s)
-	return uint(int)
+	atom, _ := strconv.Atoi(s)
+	return uint(atom)
 }
 
-// 把结构体转换为map，同时key改为下划线形式
+func Str2int(s string) int {
+	atoi, _ := strconv.Atoi(s)
+	return atoi
+}
+
+// Struct2UnderlineMap 把结构体转换为map，同时key改为下划线形式
 // 结构体json标签要为下划线形式
 func Struct2UnderlineMap(s interface{}) (map[string]interface{}, error) {
 	marshal, err := json.Marshal(s)
@@ -18,7 +23,7 @@ func Struct2UnderlineMap(s interface{}) (map[string]interface{}, error) {
 		return nil, err
 	}
 	var mapResult map[string]interface{}
-	err = json.Unmarshal([]byte(marshal), &mapResult)
+	err = json.Unmarshal(marshal, &mapResult)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,44 @@
+definitions:
+  errcode.Error:
+    type: object
+  model.Empty:
+    type: object
+  model.UserRegisterSwag:
+    properties:
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Go Go Go！！！
+  termsOfService: https://github.com/yd2008/golang-admin
+  title: yd的golang学习后台
+  version: "1.0"
+paths:
+  /api/v1/register:
+    post:
+      parameters:
+      - description: 每页数量
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/model.UserRegisterSwag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Empty'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 注册用户
+swagger: "2.0"

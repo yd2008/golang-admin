@@ -7,7 +7,7 @@ import (
 )
 
 type ValidError struct {
-	Key string
+	Key   string
 	Value string
 }
 
@@ -23,10 +23,14 @@ func (vs ValidErrors) Errors() []string {
 
 func BindAndValid(c *gin.Context, v interface{}) (ValidErrors, bool) {
 	var errs ValidErrors
-	err := c.ShouldBind(&v)
+	err := c.ShouldBind(v)
 	if err != nil {
 		verrs, ok := err.(validator.ValidationErrors)
 		if !ok {
+			errs = append(errs, &ValidError{
+				Key:   "参数绑定错误",
+				Value: err.Error(),
+			})
 			return errs, false
 		}
 		trans := c.Value("trans").(ut.Translator)

@@ -2,16 +2,16 @@ package service
 
 import (
 	"golang-admin/internal/model"
-	"golang-admin/pkg/convert"
+	"golang-admin/pkg/util"
 )
 
-type RegisterUserReq struct {
+type RegisterUserBody struct {
 	UserName string `json:"user_name" binding:"required,min=3,max=100"`
 	Password string `json:"password" binding:"required,min=6,max=100"`
 	Sex      uint8  `json:"sex"`
 }
 
-type LoginUserReq struct {
+type LoginUserBody struct {
 	UserName string `json:"user_name" binding:"required,min=3,max=100"`
 	Password string `json:"password" binding:"required,min=6,max=100"`
 }
@@ -24,16 +24,16 @@ type DeleteUserReq struct {
 	ID uint `json:"id" binding:"required,gte=1"`
 }
 
-func (svc *Service) UserRegister(param *RegisterUserReq) error {
-	return svc.dao.CreateUser(param.UserName, param.Password, param.Sex)
+func (svc *Service) UserRegister(param *RegisterUserBody) error {
+	encryptPwd, err := util.GenerateFromPassword(param.Password)
+	if err != nil {
+		return err
+	}
+	return svc.dao.CreateUser(param.UserName, encryptPwd, param.Sex)
 }
 
-func (svc *Service) UserLogin(param *LoginUserReq) (*model.User, error) {
-	query, err := convert.Struct2UnderlineMap(param)
-	if err != nil {
-		return nil, err
-	}
-	return svc.dao.QueryUser(query)
+func (svc *Service) UserLogin(param *LoginUserBody) (*model.User, error) {
+	return svc.dao.QueryUser(param.UserName, param.Password)
 }
 
 func (svc *Service) UserDelete(param *DeleteUserReq) error {

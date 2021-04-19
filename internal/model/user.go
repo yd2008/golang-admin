@@ -1,15 +1,19 @@
 package model
 
 import (
+	"github.com/go-sql-driver/mysql"
+	"golang-admin/pkg/errcode"
+	"golang-admin/pkg/util"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model `json:"-"`
-	Username   string `json:"user_name" gorm:"column:user_name;type:varchar(100);comment:用户名"`
-	Sex        uint8  `json:"sex" gorm:"column:sex;type:int(2);default:0;comment:性别"`
-	Password   string `json:"password" gorm:"column:password;type:varchar(100);comment:密码;<-"`
-	Salt       string `json:"-" gorm:"column:salt;type:varchar(255);comment:加盐;<-"`
+	Common
+	Username string `json:"user_name" gorm:"column:user_name;unique;type:varchar(100);comment:用户名"`
+	Sex      uint8  `json:"sex" gorm:"column:sex;type:int(2);default:0;comment:性别"`
+	Password string `json:"-" gorm:"column:password;type:varchar(100);comment:密码;<-"`
+	Avatar   string `json:"avatar" gorm:"column:avatar;type:varchar(255);comment:头像;"`
+	Salt     string `json:"-" gorm:"column:salt;type:varchar(255);comment:加盐;<-"`
 }
 
 func (User) TableName() string {
@@ -29,7 +33,12 @@ func (u User) Count(db *gorm.DB) (int64, error) {
 }
 
 func (u User) Create(db *gorm.DB) error {
-	return db.Create(&u).Error
+	err := db.Create(&u).Error
+	if sqlError, ok := err.(*mysql.MySQLError); ok {
+		err = errcode.RegisterUserFail.WithDetails(sqlError.Error())
+	}
+
+	return err
 }
 
 func (u User) Delete(db *gorm.DB) error {
@@ -49,12 +58,17 @@ func (u User) Get(db *gorm.DB) (*User, error) {
 	return &user, nil
 }
 
-func (u User) Query(db *gorm.DB, query map[string]interface{}) (*User, error) {
+func (u User) Query(db *gorm.DB, username, password string) (*User, error) {
 	var user User
-	err := db.Where(query).First(&user).Error
+	err := db.Where("user_name = ?", username).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
+	err = util.CompareWithPassword(user.Password, password)
+	if err != nil {
+		return nil, err
+	}
+
 	return &user, nil
 }
 

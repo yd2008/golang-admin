@@ -2,7 +2,6 @@ package dao
 
 import (
 	"golang-admin/internal/model"
-	"gorm.io/gorm"
 )
 
 func (d *Dao) CountUser(username string) (int64, error) {
@@ -16,18 +15,17 @@ func (d *Dao) CreateUser(username, password string, sex uint8) error {
 		Sex:      sex,
 		Password: password,
 	}
-
 	return user.Create(d.engine)
 }
 
-func (d *Dao) QueryUser(query map[string]interface{}) (*model.User, error) {
+func (d *Dao) QueryUser(username, password string) (*model.User, error) {
 	user := model.User{}
-	return user.Query(d.engine, query)
+	return user.Query(d.engine, username, password)
 }
 
 func (d *Dao) GetUser(id uint) (*model.User, error) {
-	user := model.User{
-		Model: gorm.Model{
+	var user = model.User{
+		Common: model.Common{
 			ID: id,
 		},
 	}
@@ -35,8 +33,8 @@ func (d *Dao) GetUser(id uint) (*model.User, error) {
 }
 
 func (d *Dao) DeleteUser(id uint) error {
-	user := model.User{
-		Model: gorm.Model{
+	var user = model.User{
+		Common: model.Common{
 			ID: id,
 		},
 	}

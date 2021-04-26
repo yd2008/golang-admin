@@ -7,12 +7,19 @@ import (
 	_ "golang-admin/docs"
 	"golang-admin/internal/middleware"
 	v1 "golang-admin/internal/routers/api/v1"
+	"golang-admin/internal/routers/common"
 )
 
 func NewRouter() *gin.Engine {
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.Use(middleware.Translations())
+
+	group := r.Group("/common")
+	{
+		common := common.NewCommon()
+		group.POST("/wechatlogin", common.WechatLogin)
+	}
 
 	apiV1 := r.Group("/api/v1")
 	{

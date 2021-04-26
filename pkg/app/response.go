@@ -22,7 +22,7 @@ func (r *Response) SuccessData(data interface{}) {
 	data = gin.H{
 		"code": 0,
 		"data": data,
-		"msg":  "请求成功",
+		"msg":  "操作成功！",
 	}
 	r.ctx.JSON(http.StatusOK, data)
 }

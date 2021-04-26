@@ -30,11 +30,11 @@ func GenerateTokenUser(user *model.User) (interface{}, error) {
 
 	tokenUser := struct {
 		id    uint
-		sex   uint8
+		gender   uint8
 		token string
 	}{
 		user.ID,
-		user.Sex,
+		user.Gender,
 		token,
 	}
 

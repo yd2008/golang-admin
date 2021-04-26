@@ -8,7 +8,7 @@ import (
 type RegisterUserBody struct {
 	UserName string `json:"user_name" binding:"required,min=3,max=100"`
 	Password string `json:"password" binding:"required,min=6,max=100"`
-	Sex      uint8  `json:"sex"`
+	Gender   uint8  `json:"gender"`
 }
 
 type LoginUserBody struct {
@@ -29,7 +29,7 @@ func (svc *Service) UserRegister(param *RegisterUserBody) error {
 	if err != nil {
 		return err
 	}
-	return svc.dao.CreateUser(param.UserName, encryptPwd, param.Sex)
+	return svc.dao.CreateUser(param.UserName, encryptPwd, param.Gender)
 }
 
 func (svc *Service) UserLogin(param *LoginUserBody) (*model.User, error) {

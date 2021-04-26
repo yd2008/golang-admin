@@ -9,10 +9,10 @@ func (d *Dao) CountUser(username string) (int64, error) {
 	return user.Count(d.engine)
 }
 
-func (d *Dao) CreateUser(username, password string, sex uint8) error {
+func (d *Dao) CreateUser(username, password string, gender uint8) error {
 	user := model.User{
 		Username: username,
-		Sex:      sex,
+		Gender:   gender,
 		Password: password,
 	}
 	return user.Create(d.engine)
@@ -40,3 +40,4 @@ func (d *Dao) DeleteUser(id uint) error {
 	}
 	return user.Delete(d.engine)
 }
+

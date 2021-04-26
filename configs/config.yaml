@@ -31,3 +31,8 @@ JWT:
   Secret: golang-admin
   Issuer: yd
   Expire: 86400 # 7200 2h 86400 1d
+Third:
+  WechatAppID: wxea33eaab6c560ab5
+  WechatAppSecret: b0625b5229ea13639680a38bbb773472
+  WechatAccessToken: https://api.weixin.qq.com/sns/jscode2session
+  WechatUserInfo: https://api.weixin.qq.com/sns/userinfo

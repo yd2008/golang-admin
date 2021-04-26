@@ -9,11 +9,13 @@ import (
 
 type User struct {
 	Common
-	Username string `json:"user_name" gorm:"column:user_name;unique;type:varchar(100);comment:用户名"`
-	Sex      uint8  `json:"sex" gorm:"column:sex;type:int(2);default:0;comment:性别"`
-	Password string `json:"-" gorm:"column:password;type:varchar(100);comment:密码;<-"`
-	Avatar   string `json:"avatar" gorm:"column:avatar;type:varchar(255);comment:头像;"`
-	Salt     string `json:"-" gorm:"column:salt;type:varchar(255);comment:加盐;<-"`
+	Username      string `json:"username" gorm:"column:username;unique;type:varchar(100);comment:用户名"`
+	Gender        uint8  `json:"gender" gorm:"column:gender;type:int(2);default:0;comment:性别"`
+	Password      string `json:"-" gorm:"column:password;type:varchar(100);comment:密码;<-"`
+	Avatar        string `json:"avatar" gorm:"column:avatar;type:varchar(255);comment:头像;"`
+	IsWechatLogin uint8  `json:"is_wechat_login" gorm:"column:is_wechat_login;type:int(2);default:0;comment:是否是微信登录"`
+	WechatId      string `json:"wechat_id" gorm:"column:wechat_id;unique;comment:微信openid"`
+	Salt          string `json:"-" gorm:"column:salt;type:varchar(255);comment:加盐;<-"`
 }
 
 func (User) TableName() string {
@@ -83,4 +85,20 @@ func (u User) List(db *gorm.DB, pageOffset, pageSize int) ([]*User, error) {
 	}
 
 	return users, nil
+}
+
+func (u User) WechatLogin(db *gorm.DB) (*User, error) {
+	var user User
+	err := db.Where("wechat_id = ?", u.WechatId).First(&user).Error
+	if err != nil {
+		if err.Error() == "record not found" {
+			err = u.Create(db)
+			if err != nil {
+				return nil, err
+			}
+			return &user, nil
+		}
+		return nil, err
+	}
+	return &user, err
 }

@@ -34,7 +34,6 @@ func init() {
 // @description Go Go Go！！！
 // @termsOfService https://github.com/yd2008/golang-admin
 func main() {
-
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 
@@ -46,7 +45,6 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	s.ListenAndServe()
-
 }
 
 func setupSetting() error {
@@ -70,6 +68,11 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
+	err = setting.ReadSection("Third", &global.ThirdSetting)
+	if err != nil {
+		return err
+	}
+
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second

@@ -77,7 +77,7 @@ var doc = `{
                 "password": {
                     "type": "string"
                 },
-                "user_name": {
+                "username": {
                     "type": "string"
                 }
             }

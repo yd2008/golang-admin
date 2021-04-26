@@ -10,6 +10,7 @@ import (
 type User struct {
 	Common
 	Username      string `json:"username" gorm:"column:username;unique;type:varchar(100);comment:用户名"`
+	Phone         string `json:"phone" gorm:"column:phone;unique;type:varchar(11);comment:电话"`
 	Gender        uint8  `json:"gender" gorm:"column:gender;type:int(2);default:0;comment:性别"`
 	Password      string `json:"-" gorm:"column:password;type:varchar(100);comment:密码;<-"`
 	Avatar        string `json:"avatar" gorm:"column:avatar;type:varchar(255);comment:头像;"`
@@ -25,7 +26,7 @@ func (User) TableName() string {
 func (u User) Count(db *gorm.DB) (int64, error) {
 	var count int64
 	if u.Username == "" {
-		db.Where("user_name = ?", u.Username)
+		db.Where("username = ?", u.Username)
 	}
 	if err := db.Model(User{}).Count(&count).Error; err != nil {
 		return 0, err
@@ -62,7 +63,7 @@ func (u User) Get(db *gorm.DB) (*User, error) {
 
 func (u User) Query(db *gorm.DB, username, password string) (*User, error) {
 	var user User
-	err := db.Where("user_name = ?", username).First(&user).Error
+	err := db.Where("username = ?", username).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +79,7 @@ func (u User) List(db *gorm.DB, pageOffset, pageSize int) ([]*User, error) {
 	var users []*User
 	var err error
 	if u.Username != "" {
-		db.Where("user_name = ?", u.Username)
+		db.Where("username = ?", u.Username)
 	}
 	if err = db.Offset(pageOffset).Limit(pageSize).Find(&users).Error; err != nil {
 		return nil, err
@@ -90,15 +91,14 @@ func (u User) List(db *gorm.DB, pageOffset, pageSize int) ([]*User, error) {
 func (u User) WechatLogin(db *gorm.DB) (*User, error) {
 	var user User
 	err := db.Where("wechat_id = ?", u.WechatId).First(&user).Error
-	if err != nil {
-		if err.Error() == "record not found" {
-			err = u.Create(db)
-			if err != nil {
-				return nil, err
-			}
-			return &user, nil
+	if err != nil && err.Error() == "record not found" {
+		if err = u.Create(db); err != nil {
+			return nil, err
 		}
+		return &user, nil
+	} else if err != nil {
 		return nil, err
 	}
+
 	return &user, err
 }

@@ -6,13 +6,14 @@ import (
 )
 
 type RegisterUserBody struct {
-	UserName string `json:"user_name" binding:"required,min=3,max=100"`
+	Username string `json:"username" binding:"required,min=3,max=100"`
 	Password string `json:"password" binding:"required,min=6,max=100"`
+	Phone    string `json:"phone" binding:"required,min=11,max=11"`
 	Gender   uint8  `json:"gender"`
 }
 
 type LoginUserBody struct {
-	UserName string `json:"user_name" binding:"required,min=3,max=100"`
+	Username string `json:"username" binding:"required,min=3,max=100"`
 	Password string `json:"password" binding:"required,min=6,max=100"`
 }
 
@@ -29,11 +30,11 @@ func (svc *Service) UserRegister(param *RegisterUserBody) error {
 	if err != nil {
 		return err
 	}
-	return svc.dao.CreateUser(param.UserName, encryptPwd, param.Gender)
+	return svc.dao.CreateUser(param.Username, encryptPwd, param.Phone, param.Gender)
 }
 
 func (svc *Service) UserLogin(param *LoginUserBody) (*model.User, error) {
-	return svc.dao.QueryUser(param.UserName, param.Password)
+	return svc.dao.QueryUser(param.Username, param.Password)
 }
 
 func (svc *Service) UserDelete(param *DeleteUserReq) error {

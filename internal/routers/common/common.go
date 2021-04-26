@@ -28,5 +28,6 @@ func (Common) WechatLogin(c *gin.Context) {
 		response.Error(errcode.WechatLoginError)
 		return
 	}
+
 	response.SuccessData(user)
 }

@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"golang-admin/pkg/errcode"
+	"math"
 	"net/http"
 )
 
@@ -28,13 +29,11 @@ func (r *Response) SuccessData(data interface{}) {
 }
 
 func (r *Response) SuccessList(list interface{}, pager Pager, totalSize int64) {
+	pager.TotalSize = totalSize
+	pager.TotalPage = int64(math.Ceil(float64(totalSize) / float64(pager.PageSize)))
 	r.ctx.JSON(http.StatusOK, gin.H{
 		"list": list,
-		"pager": Pager{
-			PageIndex: GetPageIndex(r.ctx),
-			PageSize:  GetPageSize(r.ctx),
-			TotalSize: totalSize,
-		},
+		"pager": pager,
 	})
 }
 
@@ -56,8 +55,5 @@ func (r *Response) ErrorIfHasDetail(err error, errCode *errcode.Error) {
 		return
 	}
 
-	if err != nil {
-		r.Error(errCode)
-		return
-	}
+	r.Error(errCode)
 }

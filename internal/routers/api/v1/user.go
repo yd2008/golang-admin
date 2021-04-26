@@ -71,13 +71,13 @@ func (User) Login(c *gin.Context) {
 		return
 	}
 
-	tokenUser, err := app.GenerateTokenUser(user)
+	token, err := app.GenerateToken(user)
 	if err != nil {
 		response.Error(errcode.UnauthorizedTokenGenerate)
 		return
 	}
 
-	response.SuccessData(tokenUser)
+	response.SuccessData(token)
 }
 
 func (User) Get(c *gin.Context) {

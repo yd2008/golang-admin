@@ -7,7 +7,7 @@ definitions:
     properties:
       password:
         type: string
-      user_name:
+      username:
         type: string
     type: object
 info:

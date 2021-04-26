@@ -9,6 +9,7 @@ import (
 type Pager struct {
 	PageIndex int   `json:"page_index"`
 	PageSize  int   `json:"page_size"`
+	TotalPage int64 `json:"total_page"`
 	TotalSize int64 `json:"total_size"`
 }
 

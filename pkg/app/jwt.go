@@ -12,7 +12,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateTokenUser(user *model.User) (interface{}, error) {
+func GenerateToken(user *model.User) (interface{}, error) {
 	expiredTime := time.Now().Add(global.JWTSetting.Expire)
 	claims := Claims{
 		UserId: user.ID,
@@ -28,17 +28,12 @@ func GenerateTokenUser(user *model.User) (interface{}, error) {
 		return nil, err
 	}
 
-	tokenUser := struct {
-		id    uint
-		gender   uint8
-		token string
+	data := struct {
+		Token string `json:"token"`
 	}{
-		user.ID,
-		user.Gender,
-		token,
+		Token: token,
 	}
-
-	return tokenUser, nil
+	return data, nil
 }
 
 func ParseToken(tokenStr string) (*Claims, error) {

@@ -5,7 +5,7 @@ import (
 	"golang-admin/pkg/util"
 )
 
-func (d *Dao)GetOrCreateUser(wechatUser *util.WechatUser) (*model.User, error) {
+func (d *Dao) GetOrCreateUser(wechatUser *util.WechatUser) (*model.User, error) {
 	var user = model.User{
 		IsWechatLogin: 1,
 		WechatId: wechatUser.OpenID,
@@ -15,4 +15,3 @@ func (d *Dao)GetOrCreateUser(wechatUser *util.WechatUser) (*model.User, error) {
 	}
 	return user.WechatLogin(d.engine)
 }
-

@@ -47,6 +47,15 @@ type ThirdSettings struct {
 	WechatUserInfo    string
 }
 
+type ALiOSSSettings struct {
+	RegionId        string
+	AccessKeyId     string
+	AccessKeySecret string
+	RoleArn         string
+	RoleSessionName string
+	Scheme          string
+}
+
 func (s *Setting) ReadSection(k string, v interface{}) error {
 	err := s.vp.UnmarshalKey(k, v)
 	if err != nil {

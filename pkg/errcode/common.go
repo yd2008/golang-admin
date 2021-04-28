@@ -11,4 +11,5 @@ var (
 	UnauthorizedTokenGenerate = NewError(10000006, "鉴权失败，Token 生成失败")
 	TooManyRequests           = NewError(10000007, "请求过多")
 	WechatLoginError          = NewError(10000008, "微信登录错误")
+	OssInteralError           = NewError(10000009, "oss 内部错误")
 )

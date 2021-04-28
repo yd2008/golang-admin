@@ -34,6 +34,7 @@ func init() {
 // @description Go Go Go！！！
 // @termsOfService https://github.com/yd2008/golang-admin
 func main() {
+
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 
@@ -69,6 +70,10 @@ func setupSetting() error {
 		return err
 	}
 	err = setting.ReadSection("Third", &global.ThirdSetting)
+	if err != nil {
+		return err
+	}
+	err = setting.ReadSection("ALiOSS", &global.ALiOSSSetting)
 	if err != nil {
 		return err
 	}

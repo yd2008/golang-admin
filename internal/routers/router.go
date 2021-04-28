@@ -13,12 +13,14 @@ import (
 func NewRouter() *gin.Engine {
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.Use(middleware.Cors())
 	r.Use(middleware.Translations())
 
 	group := r.Group("/common")
 	{
 		common := common.NewCommon()
 		group.POST("/wechatlogin", common.WechatLogin)
+		group.GET("/getossaccesstoken", common.GetOssAccessToken)
 	}
 
 	apiV1 := r.Group("/api/v1")

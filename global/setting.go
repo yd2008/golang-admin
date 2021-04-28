@@ -8,4 +8,5 @@ var (
 	DatabaseSetting *setting.DatabaseSettingS
 	JWTSetting      *setting.JWTSettingS
 	ThirdSetting    *setting.ThirdSettings
+	ALiOSSSetting   *setting.ALiOSSSettings
 )

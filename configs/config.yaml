@@ -36,3 +36,10 @@ Third:
   WechatAppSecret: b0625b5229ea13639680a38bbb773472
   WechatAccessToken: https://api.weixin.qq.com/sns/jscode2session
   WechatUserInfo: https://api.weixin.qq.com/sns/userinfo
+ALiOSS:
+  RegionId: cn-chengdu
+  AccessKeyId: LTAI5tMD1QB4CzeCeSVWuWCF
+  AccessKeySecret: 5nG1dC4iuueyALTotixZJ88TusoUph
+  RoleArn: acs:ram::1388215217019872:role/aliyunosstokengeneratorrole
+  RoleSessionName: golang_admin
+  Scheme: https

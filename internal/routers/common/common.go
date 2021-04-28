@@ -13,6 +13,16 @@ func NewCommon() Common {
 	return Common{}
 }
 
+func (Common) GetOssAccessToken(c *gin.Context) {
+	response := app.NewResponse(c)
+	credentials, err := app.CreateCredentials()
+	if err != nil {
+		response.Error(errcode.OssInteralError)
+	}
+
+	response.SuccessData(credentials)
+}
+
 func (Common) WechatLogin(c *gin.Context) {
 	response := app.NewResponse(c)
 	param := service.WehatLoginBody{}

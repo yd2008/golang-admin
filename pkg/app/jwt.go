@@ -3,7 +3,6 @@ package app
 import (
 	"github.com/dgrijalva/jwt-go"
 	"golang-admin/global"
-	"golang-admin/internal/model"
 	"time"
 )
 
@@ -12,10 +11,10 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(user *model.User) (interface{}, error) {
+func GenerateToken(userId uint) (interface{}, error) {
 	expiredTime := time.Now().Add(global.JWTSetting.Expire)
 	claims := Claims{
-		UserId: user.ID,
+		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiredTime.Unix(),
 			Issuer:    global.JWTSetting.Issuer,

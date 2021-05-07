@@ -71,13 +71,31 @@ func (User) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := app.GenerateToken(user)
+	token, err := app.GenerateToken(user.ID)
 	if err != nil {
 		response.Error(errcode.UnauthorizedTokenGenerate)
 		return
 	}
 
 	response.SuccessData(token)
+}
+
+func (User) Update(c *gin.Context) {
+	response := app.NewResponse(c)
+	var param = service.UpdateUserBody{ID: convert.Str2uint(c.Param("id"))}
+	if validErrors, ok := app.BindAndValid(c, &param); !ok {
+		response.Error(errcode.InvalidParams.WithDetails(validErrors.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.UserUpdate(&param)
+	if err != nil {
+		response.Error(errcode.LoginUserFail)
+		return
+	}
+
+	response.Success()
 }
 
 func (User) Get(c *gin.Context) {
@@ -91,7 +109,7 @@ func (User) Get(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 	user, err := svc.UserGet(&param)
 	if err != nil {
-		response.Error(errcode.DeleteUserFail)
+		response.ErrorIfHasDetail(err, errcode.GetUserFail)
 		return
 	}
 

@@ -10,13 +10,14 @@ import (
 type User struct {
 	Common
 	Username      string `json:"username" gorm:"column:username;unique;type:varchar(100);comment:用户名"`
-	Phone         string `json:"phone" gorm:"column:phone;unique;type:varchar(11);comment:电话"`
+	Phone         string `json:"phone" gorm:"column:phone;unique;type:varchar(11);default:null;comment:电话"`
 	Gender        uint8  `json:"gender" gorm:"column:gender;type:int(2);default:0;comment:性别"`
 	Password      string `json:"-" gorm:"column:password;type:varchar(100);comment:密码;<-"`
 	Avatar        string `json:"avatar" gorm:"column:avatar;type:varchar(255);comment:头像;"`
 	IsWechatLogin uint8  `json:"is_wechat_login" gorm:"column:is_wechat_login;type:int(2);default:0;comment:是否是微信登录"`
-	WechatId      string `json:"wechat_id" gorm:"column:wechat_id;unique;comment:微信openid"`
+	WechatId      string `json:"wechat_id" gorm:"column:wechat_id;unique;default:null;comment:微信openid"`
 	Salt          string `json:"-" gorm:"column:salt;type:varchar(255);comment:加盐;<-"`
+	Tags          string `json:"tags" gorm:"column:tag;type:varchar(255);default:'';comment:标签;"`
 }
 
 func (User) TableName() string {
@@ -37,8 +38,8 @@ func (u User) Count(db *gorm.DB) (int64, error) {
 
 func (u User) Create(db *gorm.DB) error {
 	err := db.Create(&u).Error
-	if sqlError, ok := err.(*mysql.MySQLError); ok {
-		err = errcode.RegisterUserFail.WithDetails(sqlError.Error())
+	if sqlErr, ok := err.(*mysql.MySQLError); ok {
+		err = errcode.RegisterUserFail.WithDetails(sqlErr.Error())
 	}
 
 	return err
@@ -55,6 +56,9 @@ func (u User) Update(db *gorm.DB, values map[string]interface{}) error {
 func (u User) Get(db *gorm.DB) (*User, error) {
 	var user User
 	if err := db.First(&user, u.ID).Error; err != nil {
+		if err.Error() == "record not found" {
+			err = errcode.RegisterUserFail.WithDetails("未找到记录")
+		}
 		return nil, err
 	}
 

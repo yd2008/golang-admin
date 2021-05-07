@@ -5,13 +5,13 @@ import (
 	"gorm.io/gorm"
 )
 
-var tabs = []interface{}{model.User{}, model.News{}}
+var tabs = []interface{}{
+	model.User{},
+	model.News{},
+	model.Tag{},
+}
 
 // CreatTables 创建项目需要用到的表，如已存在则忽略
 func CreatTables(db *gorm.DB) error {
-	err := db.AutoMigrate(tabs...)
-	if err != nil {
-		return err
-	}
-	return nil
+	return db.AutoMigrate(tabs...)
 }

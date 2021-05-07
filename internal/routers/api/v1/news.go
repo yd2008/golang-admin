@@ -13,6 +13,25 @@ func NewNews() News {
 	return News{}
 }
 
+func (n News) Create(c *gin.Context) {
+	response := app.NewResponse(c)
+	var param = service.CreateNewsBody{}
+	if validErrors, ok := app.BindAndValid(c, &param); !ok {
+		response.Error(errcode.InvalidParams.WithDetails(validErrors.Errors()...))
+		return
+	}
+
+	var svc = service.New(c.Request.Context())
+ 	err := svc.NewsCreate(&param)
+	if err != nil {
+		response.Error(errcode.CreateNewsFail)
+		return
+	}
+
+	response.Success()
+}
+
+
 func (n News) List(c *gin.Context) {
 	response := app.NewResponse(c)
 	var param = service.ListNewsReq{}

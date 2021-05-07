@@ -37,6 +37,13 @@ func (r *Response) SuccessList(list interface{}, pager Pager, totalSize int64) {
 	})
 }
 
+func (r *Response) SuccessListAll(list interface{}, totalSize int64) {
+	r.ctx.JSON(http.StatusOK, gin.H{
+		"list": list,
+		"totalSize": totalSize,
+	})
+}
+
 func (r *Response) Error(err *errcode.Error) {
 	h := gin.H{"code": err.Code(), "msg": err.Msg()}
 	details := err.Details()

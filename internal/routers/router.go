@@ -18,9 +18,9 @@ func NewRouter() *gin.Engine {
 
 	group := r.Group("/common")
 	{
-		common := common.NewCommon()
-		group.POST("/wechatlogin", common.WechatLogin)
-		group.GET("/getossaccesstoken", common.GetOssAccessToken)
+		_common := common.NewCommon()
+		group.POST("/wechatlogin", _common.WechatLogin)
+		group.GET("/getossaccesstoken", _common.GetOssAccessToken)
 	}
 
 	apiV1 := r.Group("/api/v1")
@@ -28,11 +28,17 @@ func NewRouter() *gin.Engine {
 		user := v1.NewUser()
 		apiV1.POST("/register", user.Register)
 		apiV1.POST("/login", user.Login)
+		apiV1.PUT("/users/:id", user.Update)
 		apiV1.GET("/users/:id", user.Get)
 		apiV1.DELETE("/users/:id", user.Delete)
 
 		news := v1.NewNews()
-		apiV1.GET("/news", middleware.JWT(), news.List)
+		apiV1.GET("/news", news.List)
+		apiV1.POST("/news", news.Create)
+
+		tag := v1.NewTag()
+		apiV1.POST("/tags", tag.Create)
+		apiV1.GET("/tags", tag.List)
 	}
 
 	return r

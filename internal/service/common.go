@@ -1,14 +1,10 @@
 package service
 
 import (
-	"encoding/json"
-	"fmt"
 	"golang-admin/global"
 	"golang-admin/internal/model"
+	"golang-admin/pkg/app"
 	"golang-admin/pkg/util"
-	"io/ioutil"
-	"log"
-	"net/http"
 )
 
 type WehatLoginBody struct {
@@ -22,7 +18,7 @@ func (svc *Service) WechatLogin(param *WehatLoginBody) (*model.User, error) {
 	appID := global.ThirdSetting.WechatAppID
 	secret := global.ThirdSetting.WechatAppSecret
 	accessToken := global.ThirdSetting.WechatAccessToken
-	session, err := getWechatAccessSession(accessToken, appID, secret, code)
+	session, err := app.GetWechatAccessSession(accessToken, appID, secret, code)
 	if err != nil {
 		return nil, err
 	}
@@ -35,25 +31,3 @@ func (svc *Service) WechatLogin(param *WehatLoginBody) (*model.User, error) {
 	return svc.dao.GetOrCreateUser(userInfo)
 }
 
-type WechatSession struct {
-	SessionKey string `json:"session_key"`
-	Openid     string `json:"openid"`
-}
-
-func getWechatAccessSession(accessToken, appID, secret, code string) (WechatSession, error) {
-
-	url := fmt.Sprintf("%s?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", accessToken, appID, secret, code)
-
-	response, _ := http.Get(url)
-	if response.Body != nil {
-		defer response.Body.Close()
-	}
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var wechatSession WechatSession
-	json.Unmarshal(body, &wechatSession)
-
-	return wechatSession, nil
-}

@@ -392,9 +392,57 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/common/getossaccesstoken": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用"
+                ],
+                "summary": "获取oss凭证",
+                "responses": {
+                    "200": {
+                        "description": "获取oss凭证成功",
+                        "schema": {
+                            "$ref": "#/definitions/common.swagOssCredentials"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "app.OssCredentials": {
+            "type": "object",
+            "properties": {
+                "access_key_id": {
+                    "type": "string"
+                },
+                "access_key_secret": {
+                    "type": "string"
+                },
+                "expiration": {
+                    "type": "string"
+                },
+                "security_token": {
+                    "type": "string"
+                }
+            }
+        },
         "app.Pager": {
             "type": "object",
             "properties": {
@@ -409,6 +457,20 @@ var doc = `{
                 },
                 "total_size": {
                     "type": "integer"
+                }
+            }
+        },
+        "common.swagOssCredentials": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/app.OssCredentials"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },

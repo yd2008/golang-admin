@@ -1,4 +1,15 @@
 definitions:
+  app.OssCredentials:
+    properties:
+      access_key_id:
+        type: string
+      access_key_secret:
+        type: string
+      expiration:
+        type: string
+      security_token:
+        type: string
+    type: object
   app.Pager:
     properties:
       page_index:
@@ -9,6 +20,15 @@ definitions:
         type: integer
       total_size:
         type: integer
+    type: object
+  common.swagOssCredentials:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/app.OssCredentials'
+      message:
+        type: string
     type: object
   dao.News:
     properties:
@@ -394,4 +414,24 @@ paths:
       summary: 用户信息更新
       tags:
       - 用户
+  /common/getossaccesstoken:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取oss凭证成功
+          schema:
+            $ref: '#/definitions/common.swagOssCredentials'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 获取oss凭证
+      tags:
+      - 通用
 swagger: "2.0"

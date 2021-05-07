@@ -2,6 +2,8 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"golang-admin/internal/dao"
+	"golang-admin/internal/model"
 	"golang-admin/internal/service"
 	"golang-admin/pkg/app"
 	"golang-admin/pkg/convert"
@@ -23,11 +25,12 @@ func NewUser() User {
 @Router	路由，从左到右分别为：路由地址，HTTP 方法
 */
 
+// Register godoc
 // @Summary 注册用户
 // @Tags 用户
 // @Produce json
-// @Param data body model_swag.User true "注册信息"
-// @Success 200 {object} model.Empty "成功"
+// @Param data body service.LoginUserBody true "注册信息"
+// @Success 200 {object} model.SwagSuccess
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/register [post]
@@ -40,7 +43,7 @@ func (User) Register(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
- 	if err := svc.UserRegister(&param); err != nil {
+	if err := svc.UserRegister(&param); err != nil {
 		response.ErrorIfHasDetail(err, errcode.RegisterUserFail)
 		return
 	}
@@ -48,14 +51,15 @@ func (User) Register(c *gin.Context) {
 	response.Success()
 }
 
+// Login godoc
 // @Summary 用户登录
 // @Tags 用户
 // @Produce json
-// @Param data body model_swag.User true "登录信息"
-// @Success 200 {object} model.Empty "成功"
+// @Param data body service.LoginUserBody true "登录信息"
+// @Success 200 {object} swagUserLogin "登录成功"
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
-// @Router /api/v1/Login [post]
+// @Router /api/v1/login [post]
 func (User) Login(c *gin.Context) {
 	response := app.NewResponse(c)
 	var param = service.LoginUserBody{}
@@ -80,34 +84,59 @@ func (User) Login(c *gin.Context) {
 	response.SuccessData(token)
 }
 
+// Update godoc
+// @Summary 用户信息更新
+// @Tags 用户
+// @Produce json
+// @Param id path int true "用户id"
+// @Param data body service.UpdateUserBody true "更新信息"
+// @Success 200 {object} model.SwagSuccess "更新成功"
+// @Failure 400 {object} errcode.Error "请求错误"
+// @Failure 500 {object} errcode.Error "内部错误"
+// @Router /api/v1/users/{id} [put]
 func (User) Update(c *gin.Context) {
 	response := app.NewResponse(c)
-	var param = service.UpdateUserBody{ID: convert.Str2uint(c.Param("id"))}
+	var id = convert.Str2uint(c.Param("id"))
+	if id == 0 {
+		response.Error(errcode.IdRequiredError)
+		return
+	}
+
+	var param = service.UpdateUserBody{}
 	if validErrors, ok := app.BindAndValid(c, &param); !ok {
 		response.Error(errcode.InvalidParams.WithDetails(validErrors.Errors()...))
 		return
 	}
 
 	svc := service.New(c.Request.Context())
-	err := svc.UserUpdate(&param)
+	err := svc.UserUpdate(id, &param)
 	if err != nil {
-		response.Error(errcode.LoginUserFail)
+		response.ErrorIfHasDetail(err, errcode.UpdateUserFail)
 		return
 	}
 
 	response.Success()
 }
 
+// Get godoc
+// @Summary 获取用户
+// @Tags 用户
+// @Produce json
+// @Param id path int true "用户id"
+// @Success 200 {object} swagUser "获取用户成功"
+// @Failure 400 {object} errcode.Error "请求错误"
+// @Failure 500 {object} errcode.Error "内部错误"
+// @Router /api/v1/users/{id} [get]
 func (User) Get(c *gin.Context) {
-	param := service.GetUserReq{ID: convert.Str2uint(c.Param("id"))}
 	response := app.NewResponse(c)
-	if validErrors, ok := app.BindAndValid(c, &param); !ok {
-		response.Error(errcode.InvalidParams.WithDetails(validErrors.Errors()...))
+	var id = convert.Str2uint(c.Param("id"))
+	if id == 0 {
+		response.Error(errcode.IdRequiredError)
 		return
 	}
 
 	svc := service.New(c.Request.Context())
-	user, err := svc.UserGet(&param)
+	user, err := svc.UserGet(id)
 	if err != nil {
 		response.ErrorIfHasDetail(err, errcode.GetUserFail)
 		return
@@ -116,6 +145,15 @@ func (User) Get(c *gin.Context) {
 	response.SuccessData(user)
 }
 
+// Delete godoc
+// @Summary 删除用户
+// @Tags 用户
+// @Produce json
+// @Param id path int true "用户id"
+// @Success 200 {object} model.SwagSuccess "删除用户成功"
+// @Failure 400 {object} errcode.Error "请求错误"
+// @Failure 500 {object} errcode.Error "内部错误"
+// @Router /api/v1/users/{id} [delete]
 func (User) Delete(c *gin.Context) {
 	param := service.DeleteUserReq{ID: convert.Str2uint(c.Param("id"))}
 	response := app.NewResponse(c)
@@ -133,3 +171,18 @@ func (User) Delete(c *gin.Context) {
 
 	response.Success()
 }
+
+type swagUser struct {
+	model.SwagCommon
+	Data *dao.User `json:"data"`
+}
+
+type swagUserLogin struct {
+	model.SwagCommon
+	Data *swagToken `json:"data"`
+}
+
+type swagToken struct {
+	Token string `json:"token"`
+}
+

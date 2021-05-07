@@ -1,13 +1,152 @@
 definitions:
+  app.Pager:
+    properties:
+      page_index:
+        type: integer
+      page_size:
+        type: integer
+      total_page:
+        type: integer
+      total_size:
+        type: integer
+    type: object
+  dao.News:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
+  dao.User:
+    properties:
+      avatar:
+        type: string
+      gender:
+        type: integer
+      id:
+        type: integer
+      is_wechat_login:
+        type: integer
+      phone:
+        type: string
+      username:
+        type: string
+      wechat_id:
+        type: string
+    type: object
   errcode.Error:
     type: object
-  model.Empty:
+  model.SwagSuccess:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
     type: object
-  model.UserRegisterSwag:
+  model.Tag:
+    properties:
+      id:
+        type: integer
+      is_enable:
+        type: integer
+      title:
+        type: string
+    type: object
+  service.CreateNewsBody:
+    properties:
+      content:
+        type: string
+      tags:
+        type: string
+      title:
+        type: string
+    type: object
+  service.CreateTagBody:
+    properties:
+      is_enable:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  service.LoginUserBody:
     properties:
       password:
         type: string
       username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  service.UpdateUserBody:
+    properties:
+      avatar:
+        type: string
+      gender:
+        type: integer
+      phone:
+        type: string
+      username:
+        type: string
+    required:
+    - phone
+    - username
+    type: object
+  v1.swagListRes:
+    properties:
+      code:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/dao.News'
+        type: array
+      message:
+        type: string
+      pager:
+        $ref: '#/definitions/app.Pager'
+    type: object
+  v1.swagTagList:
+    properties:
+      code:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+      message:
+        type: string
+      total_size:
+        type: integer
+    type: object
+  v1.swagToken:
+    properties:
+      token:
+        type: string
+    type: object
+  v1.swagUser:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/dao.User'
+      message:
+        type: string
+    type: object
+  v1.swagUserLogin:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/v1.swagToken'
+      message:
         type: string
     type: object
 info:
@@ -17,21 +156,105 @@ info:
   title: yd的golang学习后台
   version: "1.0"
 paths:
-  /api/v1/register:
+  /api/v1/login:
     post:
       parameters:
-      - description: 每页数量
+      - description: 登录信息
         in: body
         name: data
+        required: true
         schema:
-          $ref: '#/definitions/model.UserRegisterSwag'
+          $ref: '#/definitions/service.LoginUserBody'
       produces:
       - application/json
       responses:
         "200":
-          description: 成功
+          description: 登录成功
           schema:
-            $ref: '#/definitions/model.Empty'
+            $ref: '#/definitions/v1.swagUserLogin'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 用户登录
+      tags:
+      - 用户
+  /api/v1/news:
+    get:
+      parameters:
+      - in: query
+        name: page_index
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.swagListRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 新闻列表
+      tags:
+      - 新闻
+    post:
+      parameters:
+      - description: 创建新闻
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.CreateNewsBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SwagSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 新建新闻
+      tags:
+      - 新闻
+  /api/v1/register:
+    post:
+      parameters:
+      - description: 注册信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.LoginUserBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SwagSuccess'
         "400":
           description: 请求错误
           schema:
@@ -41,4 +264,134 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: 注册用户
+      tags:
+      - 用户
+  /api/v1/tags:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.swagTagList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 标签列表
+      tags:
+      - 标签
+    post:
+      parameters:
+      - description: 创建标签
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.CreateTagBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SwagSuccess'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 新建标签
+      tags:
+      - 标签
+  /api/v1/users/{id}:
+    delete:
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除用户成功
+          schema:
+            $ref: '#/definitions/model.SwagSuccess'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 删除用户
+      tags:
+      - 用户
+    get:
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取用户成功
+          schema:
+            $ref: '#/definitions/v1.swagUser'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 获取用户
+      tags:
+      - 用户
+    put:
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.UpdateUserBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/model.SwagSuccess'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 用户信息更新
+      tags:
+      - 用户
 swagger: "2.0"

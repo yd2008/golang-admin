@@ -5,4 +5,5 @@ var (
 	LoginUserFail       = NewError(20010002, "账号或者密码错误")
 	DeleteUserFail      = NewError(20010003, "删除用户失败")
 	GetUserFail         = NewError(20010004, "获取用户失败")
+	UpdateUserFail      = NewError(20010005, "更新用户失败")
 )

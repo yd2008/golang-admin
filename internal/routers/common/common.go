@@ -17,7 +17,7 @@ func (Common) GetOssAccessToken(c *gin.Context) {
 	response := app.NewResponse(c)
 	credentials, err := app.CreateCredentials()
 	if err != nil {
-		response.Error(errcode.OssInteralError)
+		response.Error(errcode.OssInternalError)
 	}
 
 	response.SuccessData(credentials)

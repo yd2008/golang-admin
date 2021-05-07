@@ -12,9 +12,9 @@ import (
 )
 
 type WehatLoginBody struct {
-	Code string `json:"code" binging:"require"`
+	Code          string `json:"code" binging:"require"`
 	EncryptedData string `json:"encrypted_data" binging:"require"`
-	Iv string `json:"iv" binging:"require"`
+	Iv            string `json:"iv" binging:"require"`
 }
 
 func (svc *Service) WechatLogin(param *WehatLoginBody) (*model.User, error) {
@@ -37,7 +37,7 @@ func (svc *Service) WechatLogin(param *WehatLoginBody) (*model.User, error) {
 
 type WechatSession struct {
 	SessionKey string `json:"session_key"`
-	Openid string `json:"openid"`
+	Openid     string `json:"openid"`
 }
 
 func getWechatAccessSession(accessToken, appID, secret, code string) (WechatSession, error) {

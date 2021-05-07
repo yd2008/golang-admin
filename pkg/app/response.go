@@ -32,15 +32,19 @@ func (r *Response) SuccessList(list interface{}, pager Pager, totalSize int64) {
 	pager.TotalSize = totalSize
 	pager.TotalPage = int64(math.Ceil(float64(totalSize) / float64(pager.PageSize)))
 	r.ctx.JSON(http.StatusOK, gin.H{
+		"code": 0,
 		"list": list,
 		"pager": pager,
+		"msg":  "操作成功！",
 	})
 }
 
 func (r *Response) SuccessListAll(list interface{}, totalSize int64) {
 	r.ctx.JSON(http.StatusOK, gin.H{
+		"code": 0,
 		"list": list,
-		"totalSize": totalSize,
+		"total_size": totalSize,
+		"msg":  "操作成功！",
 	})
 }
 
@@ -53,8 +57,9 @@ func (r *Response) Error(err *errcode.Error) {
 	r.ctx.JSON(err.StatusCode(), h)
 }
 
-// ErrorIfHasDetail 如果已经是自定义错误则返回自定义错误，
-//                  如不是可以在第二个参数设置需要返回的自定义错误
+// ErrorIfHasDetail
+// 如果已经是自定义错误则返回自定义错误，
+// 如不是可以在第二个参数设置需要返回的自定义错误
 func (r *Response) ErrorIfHasDetail(err error, errCode *errcode.Error) {
 	detailErr, ok := err.(*errcode.Error)
 	if ok {

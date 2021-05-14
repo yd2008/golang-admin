@@ -49,4 +49,3 @@ func (n News) createNewsDao(info *model.NewsInfo) *News {
 	}
 	return &_newsDao
 }
-

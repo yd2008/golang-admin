@@ -18,6 +18,7 @@ func (vs ValidErrors) Errors() []string {
 	for _, err := range vs {
 		errs = append(errs, err.Value)
 	}
+
 	return errs
 }
 

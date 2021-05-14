@@ -30,4 +30,3 @@ func (svc *Service) WechatLogin(param *WehatLoginBody) (*model.User, error) {
 
 	return svc.dao.GetOrCreateUser(userInfo)
 }
-

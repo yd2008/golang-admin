@@ -9,4 +9,5 @@ var (
 	JWTSetting      *setting.JWTSettingS
 	ThirdSetting    *setting.ThirdSettings
 	ALiOSSSetting   *setting.ALiOSSSettings
+	LoggerSetting   *setting.LoggerSettings
 )

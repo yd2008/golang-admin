@@ -13,6 +13,8 @@ import (
 func NewRouter() *gin.Engine {
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.Use(middleware.Tracing())
+	r.Use(middleware.GinLogger(), middleware.GinRecovery(true))
 	r.Use(middleware.Cors())
 	r.Use(middleware.Translations())
 

@@ -8,7 +8,7 @@ import (
 	"golang-admin/pkg/errcode"
 )
 
-type Common struct {}
+type Common struct{}
 
 func NewCommon() Common {
 	return Common{}

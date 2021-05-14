@@ -37,7 +37,7 @@ func (svc *Service) UserRegister(param *RegisterUserBody) error {
 	return svc.dao.CreateUser(param.Username, encryptPwd, param.Phone, param.Avatar, param.Gender)
 }
 
-func (svc *Service) UserUpdate(id uint,param *UpdateUserBody) error {
+func (svc *Service) UserUpdate(id uint, param *UpdateUserBody) error {
 	return svc.dao.UpdataUser(id, param.Username, param.Phone, param.Avatar, param.Gender)
 }
 

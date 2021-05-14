@@ -43,3 +43,12 @@ ALiOSS:
   RoleArn: acs:ram::1388215217019872:role/aliyunosstokengeneratorrole
   RoleSessionName: golang_admin
   Scheme: https
+Logger:
+  Mode: debug
+  Port: 8180
+  log:
+    Level: debug
+    Filename: app.log
+    MaxSize: 200
+    MaxAge: 7
+    MaxBackups: 10

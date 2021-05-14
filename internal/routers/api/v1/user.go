@@ -185,4 +185,3 @@ type swagUserLogin struct {
 type swagToken struct {
 	Token string `json:"token"`
 }
-

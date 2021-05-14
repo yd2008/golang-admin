@@ -6,9 +6,9 @@ import (
 )
 
 type CreateNewsBody struct {
-	Title string `json:"title" binging:"required,min=3,max=100"`
+	Title   string `json:"title" binging:"required,min=3,max=100"`
 	Content string `json:"content" binging:"required,min=3"`
-	Tags string `json:"tags"`
+	Tags    string `json:"tags"`
 }
 
 type CountNewsReq struct {

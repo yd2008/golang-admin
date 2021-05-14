@@ -56,6 +56,20 @@ type ALiOSSSettings struct {
 	Scheme          string
 }
 
+type LoggerSettings struct {
+	Mode string
+	Port int
+	Log
+}
+
+type Log struct {
+	Level      string
+	Filename   string
+	MaxSize    int
+	MaxAge     int
+	MaxBackups int
+}
+
 func (s *Setting) ReadSection(k string, v interface{}) error {
 	err := s.vp.UnmarshalKey(k, v)
 	if err != nil {

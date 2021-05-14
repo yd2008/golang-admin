@@ -32,19 +32,19 @@ func (r *Response) SuccessList(list interface{}, pager Pager, totalSize int64) {
 	pager.TotalSize = totalSize
 	pager.TotalPage = int64(math.Ceil(float64(totalSize) / float64(pager.PageSize)))
 	r.ctx.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"list": list,
+		"code":  0,
+		"list":  list,
 		"pager": pager,
-		"msg":  "操作成功！",
+		"msg":   "操作成功！",
 	})
 }
 
 func (r *Response) SuccessListAll(list interface{}, totalSize int64) {
 	r.ctx.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"list": list,
+		"code":       0,
+		"list":       list,
 		"total_size": totalSize,
-		"msg":  "操作成功！",
+		"msg":        "操作成功！",
 	})
 }
 

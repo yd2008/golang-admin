@@ -33,7 +33,7 @@ func (n News) Create(c *gin.Context) {
 	}
 
 	var svc = service.New(c.Request.Context())
- 	err := svc.NewsCreate(&param)
+	err := svc.NewsCreate(&param)
 	if err != nil {
 		response.Error(errcode.CreateNewsFail)
 		return
@@ -84,5 +84,5 @@ type swagListQuery struct {
 type swagListRes struct {
 	model.SwagCommon
 	Pager *app.Pager `json:"pager"`
-	List []*dao.News
+	List  []*dao.News
 }

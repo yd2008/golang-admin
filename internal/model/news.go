@@ -6,9 +6,9 @@ import (
 
 type News struct {
 	Common
-	Title      string `json:"title" gorm:"column:title;type:varchar(100);comment:标题"`
-	Content    string `json:"content" gorm:"column:content;type:varchar(255);comment:内容"`
-	Tags       string `json:"tags" gorm:"column:tags;type:varchar(100);comment:新闻标签"`
+	Title   string `json:"title" gorm:"column:title;type:varchar(100);comment:标题"`
+	Content string `json:"content" gorm:"column:content;type:varchar(255);comment:内容"`
+	Tags    string `json:"tags" gorm:"column:tags;type:varchar(100);comment:新闻标签"`
 }
 
 type NewsInfo struct {

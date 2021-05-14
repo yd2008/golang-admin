@@ -5,6 +5,7 @@ import (
 	"golang-admin/global"
 	"golang-admin/internal/routers"
 	"golang-admin/pkg/setting"
+	"golang-admin/pkg/tracer"
 	"log"
 	"net/http"
 	"time"
@@ -21,6 +22,16 @@ func init() {
 	err = setupDatabase()
 	if err != nil {
 		log.Fatalf("setup database err! err is %v", err)
+	}
+
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("setup logger err! err is %v", err)
+	}
+
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("setup tracer err! err is %v", err)
 	}
 
 	err = setting.CreatTables(global.DBEngine)
@@ -77,6 +88,10 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
+	err = setting.ReadSection("Logger", &global.LoggerSetting)
+	if err != nil {
+		return err
+	}
 
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
@@ -91,5 +106,23 @@ func setupDatabase() error {
 		return err
 	}
 	global.DBEngine = DBEngine
+	return nil
+}
+
+func setupLogger() error {
+	Logger, err := setting.NewLogger(global.LoggerSetting)
+	if err != nil {
+		return nil
+	}
+	global.Logger = Logger
+	return nil
+}
+
+func setupTracer() error {
+	Tracer, _, err := tracer.NewJaegerTracer("golang-admin", "127.0.0.1:6831")
+	if err != nil {
+		return err
+	}
+	global.Tracer = Tracer
 	return nil
 }

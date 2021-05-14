@@ -10,6 +10,6 @@ func GenerateFromPassword(password string) (string, error) {
 	return string(fromPassword), nil
 }
 
-func CompareWithPassword(hasdPwd, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hasdPwd), []byte(password))
+func CompareWithPassword(hashedPwd, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(password))
 }

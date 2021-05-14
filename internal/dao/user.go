@@ -5,13 +5,13 @@ import (
 )
 
 type User struct {
-	ID            uint     `json:"id"`
-	Username      string   `json:"username"`
-	Phone         string   `json:"phone"`
-	Gender        uint8    `json:"gender"`
-	Avatar        string   `json:"avatar"`
-	IsWechatLogin uint8    `json:"is_wechat_login"`
-	WechatId      string   `json:"wechat_id"`
+	ID            uint   `json:"id"`
+	Username      string `json:"username"`
+	Phone         string `json:"phone"`
+	Gender        uint8  `json:"gender"`
+	Avatar        string `json:"avatar"`
+	IsWechatLogin uint8  `json:"is_wechat_login"`
+	WechatId      string `json:"wechat_id"`
 }
 
 func (d *Dao) CountUser(username string) (int64, error) {
@@ -89,4 +89,3 @@ func createUserDao(user *model.User) *User {
 	}
 	return &userDao
 }
-
